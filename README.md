@@ -66,7 +66,7 @@ You can use custom contact properties in API calls. Please make sure to [add cus
 
 Test if your API key is valid.
 
-[API Reference](/api-reference/api-key)
+[API Reference](https://loops.so/docs/api-reference/api-key)
 
 #### Parameters
 
@@ -101,15 +101,15 @@ This method will return a success or error message:
 
 Create a new contact.
 
-[API Reference](/api-reference/create-contact)
+[API Reference](https://loops.so/docs/api-reference/create-contact)
 
 #### Parameters
 
-| Name             | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                     |
-| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$email`         | string | Yes      | If a contact already exists with this email address, an error response will be returned.                                                                                                                                                                                                                                                                                  |
-| `$properties`    | array  | No       | An array containing default and any custom properties for your contact.<br />Please [add custom properties](/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](/contacts/properties#dates)). |
-| `$mailing_lists` | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                           |
+| Name             | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `$email`         | string | Yes      | If a contact already exists with this email address, an error response will be returned.                                                                                                                                                                                                                                                                                                                            |
+| `$properties`    | array  | No       | An array containing default and any custom properties for your contact.<br />Please [add custom properties](https://loops.so/docs/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](https://loops.so/docs/contacts/properties#dates)). |
+| `$mailing_lists` | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                     |
 
 #### Examples
 
@@ -157,15 +157,15 @@ Update a contact.
 
 Note: To update a contact's email address, the contact requires a `userId` value. Then you can make a request with their `userId` and an updated email address.
 
-[API Reference](/api-reference/update-contact)
+[API Reference](https://loops.so/docs/api-reference/update-contact)
 
 #### Parameters
 
-| Name             | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                     |
-| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$email`         | string | Yes      | The email address of the contact to update. If there is no contact with this email address, a new contact will be created using the email and properties in this request.                                                                                                                                                                                                 |
-| `$properties`    | array  | No       | An array containing default and any custom properties for your contact.<br />Please [add custom properties](/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](/contacts/properties#dates)). |
-| `$mailing_lists` | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                           |
+| Name             | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `$email`         | string | Yes      | The email address of the contact to update. If there is no contact with this email address, a new contact will be created using the email and properties in this request.                                                                                                                                                                                                                                           |
+| `$properties`    | array  | No       | An array containing default and any custom properties for your contact.<br />Please [add custom properties](https://loops.so/docs/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](https://loops.so/docs/contacts/properties#dates)). |
+| `$mailing_lists` | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                     |
 
 #### Example
 
@@ -212,7 +212,7 @@ This method will return a success or error message:
 
 Find a contact.
 
-[API Reference](/api-reference/find-contact)
+[API Reference](https://loops.so/docs/api-reference/find-contact)
 
 #### Parameters
 
@@ -262,7 +262,7 @@ If no contact is found, an empty list will be returned.
 
 Delete a contact.
 
-[API Reference](/api-reference/delete-contact)
+[API Reference](https://loops.so/docs/api-reference/delete-contact)
 
 #### Parameters
 
@@ -303,9 +303,9 @@ This method will return a success or error message:
 
 ### mailingLists->getAll()
 
-Get a list of your account's mailing lists. [Read more about mailing lists](/contacts/mailing-lists)
+Get a list of your account's mailing lists. [Read more about mailing lists](https://loops.so/docs/contacts/mailing-lists)
 
-[API Reference](/api-reference/list-mailing-lists)
+[API Reference](https://loops.so/docs/api-reference/list-mailing-lists)
 
 #### Parameters
 
@@ -342,20 +342,20 @@ If your account has no mailing lists, an empty list will be returned.
 
 ### events->send()
 
-Send an event to trigger an email in Loops. [Read more about events](/events)
+Send an event to trigger an email in Loops. [Read more about events](https://loops.so/docs/events)
 
-[API Reference](/api-reference/send-event)
+[API Reference](https://loops.so/docs/api-reference/send-event)
 
 #### Parameters
 
-| Name                  | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                                               |
-| --------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$event_name`         | string | Yes      |                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `$email`              | string | No       | The contact's email address. Required if `$user_id` is not present.                                                                                                                                                                                                                                                                                                                                                 |
-| `$user_id`            | string | No       | The contact's unique user ID. If you use `$user_id` without `$email`, this value must have already been added to your contact in Loops. Required if `$email` is not present.                                                                                                                                                                                                                                        |
-| `$contact_properties` | array  | No       | An array containing contact properties, which will be updated or added to the contact when the event is received.<br />Please [add custom properties](/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](/contacts/properties#dates)). |
-| `$event_properties`   | array  | No       | An array containing event properties, which will be made available in emails that are triggered by this event.<br />Values can be of type `string`, `number`, `boolean` or `date` ([see allowed date formats](/events/properties#important-information-about-event-properties)).                                                                                                                                    |
-| `$mailing_lists`      | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                     |
+| Name                  | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `$event_name`         | string | Yes      |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `$email`              | string | No       | The contact's email address. Required if `$user_id` is not present.                                                                                                                                                                                                                                                                                                                                                                                           |
+| `$user_id`            | string | No       | The contact's unique user ID. If you use `$user_id` without `$email`, this value must have already been added to your contact in Loops. Required if `$email` is not present.                                                                                                                                                                                                                                                                                  |
+| `$contact_properties` | array  | No       | An array containing contact properties, which will be updated or added to the contact when the event is received.<br />Please [add custom properties](https://loops.so/docs/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](https://loops.so/docs/contacts/properties#dates)). |
+| `$event_properties`   | array  | No       | An array containing event properties, which will be made available in emails that are triggered by this event.<br />Values can be of type `string`, `number`, `boolean` or `date` ([see allowed date formats](https://loops.so/docs/events/properties#important-information-about-event-properties)).                                                                                                                                                         |
+| `$mailing_lists`      | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                                                               |
 
 #### Examples
 
@@ -415,22 +415,22 @@ This method will return a success or error:
 
 ### transactional->send()
 
-Send a transactional email to a contact. [Learn about sending transactional email](/transactional/guide)
+Send a transactional email to a contact. [Learn about sending transactional email](https://loops.so/docs/transactional/guide)
 
-[API Reference](/api-reference/send-transactional-email)
+[API Reference](https://loops.so/docs/api-reference/send-transactional-email)
 
 #### Parameters
 
-| Name                          | Type    | Required | Notes                                                                                                                                                                       |
-| ----------------------------- | ------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$transactional_id`           | string  | Yes      | The ID of the transactional email to send.                                                                                                                                  |
-| `$email`                      | string  | Yes      | The email address of the recipient.                                                                                                                                         |
-| `$add_to_audience`            | boolean | No       | If `true`, a contact will be created in your audience using the `$email` value (if a matching contact doesn’t already exist).                                               |
-| `$data_variables`             | array   | No       | An array containing data as defined by the data variables added to the transactional email template.<br />Values can be of type `string` or `number`.                       |
-| `$attachments`                | array[] | No       | A list of attachments objects.<br />**Please note**: Attachments need to be enabled on your account before using them with the API. [Read more](/transactional/attachments) |
-| `$attachments[].filename`     | string  | No       | The name of the file, shown in email clients.                                                                                                                               |
-| `$attachments[].content_type` | string  | No       | The MIME type of the file.                                                                                                                                                  |
-| `$attachments[].data`         | string  | No       | The base64-encoded content of the file.                                                                                                                                     |
+| Name                          | Type    | Required | Notes                                                                                                                                                                                            |
+| ----------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `$transactional_id`           | string  | Yes      | The ID of the transactional email to send.                                                                                                                                                       |
+| `$email`                      | string  | Yes      | The email address of the recipient.                                                                                                                                                              |
+| `$add_to_audience`            | boolean | No       | If `true`, a contact will be created in your audience using the `$email` value (if a matching contact doesn’t already exist).                                                                    |
+| `$data_variables`             | array   | No       | An array containing data as defined by the data variables added to the transactional email template.<br />Values can be of type `string` or `number`.                                            |
+| `$attachments`                | array[] | No       | A list of attachments objects.<br />**Please note**: Attachments need to be enabled on your account before using them with the API. [Read more](https://loops.so/docs/transactional/attachments) |
+| `$attachments[].filename`     | string  | No       | The name of the file, shown in email clients.                                                                                                                                                    |
+| `$attachments[].content_type` | string  | No       | The MIME type of the file.                                                                                                                                                                       |
+| `$attachments[].data`         | string  | No       | The base64-encoded content of the file.                                                                                                                                                          |
 
 #### Examples
 
@@ -495,9 +495,9 @@ If there is a problem with the request, a descriptive error message will be retu
 
 ### customFields->getAll()
 
-Get a list of your account's custom fields. These are custom properties that can be added to contacts to store extra data. [Read more about contact properties](/contacts/properties)
+Get a list of your account's custom fields. These are custom properties that can be added to contacts to store extra data. [Read more about contact properties](https://loops.so/docs/contacts/properties)
 
-[API Reference](/api-reference/list-custom-fields)
+[API Reference](https://loops.so/docs/api-reference/list-custom-fields)
 
 #### Parameters
 
