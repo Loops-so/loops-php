@@ -18,7 +18,7 @@ class CustomFields
     {
         try {
             $response = $this->client->get('v1/contacts/customFields');
-            return json_decode($response->getBody()->getContents(), true);
+            return json_decode(json: $response->getBody()->getContents(), associative: true);
         } catch (GuzzleException $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

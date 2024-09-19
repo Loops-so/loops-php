@@ -14,10 +14,16 @@ class Events
         $this->client = $client;
     }
 
-    public function send(string $event_name, string $email = null, string $user_id = null, array $contact_properties = [], array $event_properties = [], array $mailing_lists = [])
-    {
+    public function send(
+        string $event_name,
+        string $email = null,
+        string $user_id = null,
+        array $contact_properties = [],
+        array $event_properties = [],
+        array $mailing_lists = []
+    ) {
         if (!$email && !$user_id) {
-            throw new \InvalidArgumentException('You must provide an email or user_id value.');
+            throw new \InvalidArgumentException(message: 'You must provide an email or user_id value.');
         }
 
         $payload = [
@@ -32,7 +38,7 @@ class Events
 
         try {
             $response = $this->client->post('v1/events/send', ['json' => $payload]);
-            return json_decode($response->getBody()->getContents(), true);
+            return json_decode(json: $response->getBody()->getContents(), associative: true);
         } catch (GuzzleException $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
