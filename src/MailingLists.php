@@ -3,7 +3,6 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 
 class MailingLists
 {
@@ -14,13 +13,8 @@ class MailingLists
         $this->client = $client;
     }
 
-    public function getAll()
+    public function get()
     {
-        try {
-            $response = $this->client->get('v1/lists');
-            return json_decode(json: $response->getBody()->getContents(), associative: true);
-        } catch (GuzzleException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+        return $this->client->query('GET', 'v1/lists');
     }
 }

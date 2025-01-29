@@ -3,7 +3,6 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 
 class ApiKey
 {
@@ -14,13 +13,8 @@ class ApiKey
         $this->client = $client;
     }
 
-    public function test()
+    public function test(): mixed
     {
-        try {
-            $response = $this->client->get('v1/api-key');
-            return json_decode(json: $response->getBody()->getContents(), associative: true);
-        } catch (GuzzleException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+        return $this->client->query('GET', 'v1/api-key');
     }
 }

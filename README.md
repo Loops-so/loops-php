@@ -24,11 +24,31 @@ See the API documentation to learn more about [rate limiting](https://loops.so/d
 
 To use the package, first initialise the client with your API key, then you can call one of the methods.
 
+API rate limits can be handled with the included `RateLimitExceededError` exception.
+
 ```php
 use Loops\LoopsClient;
 
 $loops = new LoopsClient(env('LOOPS_API_KEY'));
+
+// Test API key
 $result = $loops->apiKey->test();
+
+// Create a contact and catch errors
+try {
+    $result = $loops->contacts->create('user@example.com', ['firstName' => 'John']);
+} catch (Loops\Exceptions\RateLimitExceededError $e) {
+    // Handle rate limiting
+    echo "Rate limit hit. Limit: " . $e->getLimit() . ", requests remaining: " . $e->getRemaining();
+} catch (Loops\Exceptions\APIError $e) {
+    // Handle API errors (400, 401, 403, etc)
+    echo $e->getMessage();
+    $returnedJson = $e->getJson(); // JSON returned by the API
+    $statusCode = $e->statusCode(); // HTTP status code from the response
+} catch (\Exception $e) {
+    // Handle any other unexpected errors
+    echo "Unexpected error: " . $e->getMessage();
+}
 ```
 
 ## Default contact properties
@@ -55,10 +75,11 @@ You can use custom contact properties in API calls. Please make sure to [add cus
 - [contacts->update()](#contacts-update)
 - [contacts->find()](#contacts-find)
 - [contacts->delete()](#contacts-delete)
-- [mailingLists->getAll()](#mailinglists-getall)
+- [contactProperties->create()](#contactproperties-create)
+- [contactProperties->get()](#contactproperties-get)
+- [mailingLists->get()](#mailinglists-get)
 - [events->send()](#events-send)
 - [transactional->send()](#transactional-send)
-- [customFields->getAll()](#customfields-getall)
 
 ---
 
@@ -107,7 +128,7 @@ Create a new contact.
 
 | Name             | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$email`         | string | Yes      | If a contact already exists with this email address, an error response will be returned.                                                                                                                                                                                                                                                                                                                            |
+| `$email`         | string | Yes      | If a contact already exists with this email address, an `APIError` will be thrown.                                                                                                                                                                                                                                                                                                                                  |
 | `$properties`    | array  | No       | An array containing default and any custom properties for your contact.<br />Please [add custom properties](https://loops.so/docs/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](https://loops.so/docs/contacts/properties#dates)). |
 | `$mailing_lists` | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                     |
 
@@ -133,8 +154,6 @@ $result = $loops->contacts->create(
 
 #### Response
 
-This method will return a success or error message:
-
 ```json
 {
   "success": true,
@@ -142,7 +161,10 @@ This method will return a success or error message:
 }
 ```
 
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
 ```json
+// HTTP 400 Bad Request
 {
   "success": false,
   "message": "An error message here."
@@ -190,8 +212,6 @@ $results = $loops->contacts->update(
 
 #### Response
 
-This method will return a success or error message:
-
 ```json
 {
   "success": true,
@@ -199,7 +219,10 @@ This method will return a success or error message:
 }
 ```
 
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
 ```json
+// HTTP 400 Bad Request
 {
   "success": false,
   "message": "An error message here."
@@ -283,8 +306,6 @@ $result = $loops->contacts->delete(user_id: '12345')
 
 #### Response
 
-This method will return a success or error message:
-
 ```json
 {
   "success": true,
@@ -292,7 +313,18 @@ This method will return a success or error message:
 }
 ```
 
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
 ```json
+// HTTP 400 Bad Reuqest
+{
+  "success": false,
+  "message": "An error message here."
+}
+```
+
+```json
+// HTTP 404 Not Found
 {
   "success": false,
   "message": "An error message here."
@@ -301,7 +333,132 @@ This method will return a success or error message:
 
 ---
 
-### mailingLists->getAll()
+### contactProperties->create()
+
+Create a new contact property.
+
+[API Reference](https://loops.so/docs/api-reference/create-contact-property)
+
+#### Parameters
+
+| Name   | Type   | Required | Notes                                                                                  |
+| ------ | ------ | -------- | -------------------------------------------------------------------------------------- |
+| `name` | string | Yes      | The name of the property. Should be in camelCase, like `planName` or `favouriteColor`. |
+| `type` | string | Yes      | The property's value type.<br />Can be one of `string`, `number`, `boolean` or `date`. |
+
+#### Examples
+
+```php
+$result = $loops->contactProperties->create("planName", "string");
+```
+
+#### Response
+
+```json
+{
+  "success": true
+}
+```
+
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
+```json
+// HTTP 400 Bad Request
+{
+  "success": false,
+  "message": "An error message here."
+}
+```
+
+---
+
+### contactProperties->get()
+
+Get a list of your account's contact properties.
+
+[API Reference](https://loops.so/docs/api-reference/list-contact-properties)
+
+#### Parameters
+
+| Name   | Type   | Required | Notes                                                           |
+| ------ | ------ | -------- | --------------------------------------------------------------- |
+| `list` | string | No       | Use "custom" to retrieve only your account's custom properties. |
+
+#### Example
+
+```php
+$result = $loops->contactProperties->get();
+
+$result = $loops->contactProperties->get("custom");
+```
+
+#### Response
+
+This method will return a list of contact property objects containing `key`, `label` and `type` attributes.
+
+```json
+[
+  {
+    "key": "firstName",
+    "label": "First Name",
+    "type": "string"
+  },
+  {
+    "key": "lastName",
+    "label": "Last Name",
+    "type": "string"
+  },
+  {
+    "key": "email",
+    "label": "Email",
+    "type": "string"
+  },
+  {
+    "key": "notes",
+    "label": "Notes",
+    "type": "string"
+  },
+  {
+    "key": "source",
+    "label": "Source",
+    "type": "string"
+  },
+  {
+    "key": "userGroup",
+    "label": "User Group",
+    "type": "string"
+  },
+  {
+    "key": "userId",
+    "label": "User Id",
+    "type": "string"
+  },
+  {
+    "key": "subscribed",
+    "label": "Subscribed",
+    "type": "boolean"
+  },
+  {
+    "key": "createdAt",
+    "label": "Created At",
+    "type": "date"
+  },
+  {
+    "key": "favoriteColor",
+    "label": "Favorite Color",
+    "type": "string"
+  },
+  {
+    "key": "plan",
+    "label": "Plan",
+    "type": "string"
+  }
+]
+```
+
+---
+
+### mailingLists->get()
 
 Get a list of your account's mailing lists. [Read more about mailing lists](https://loops.so/docs/contacts/mailing-lists)
 
@@ -314,12 +471,12 @@ None
 #### Example
 
 ```php
-$result = $loops->mailingLists->getAll();
+$result = $loops->mailingLists->get();
 ```
 
 #### Response
 
-This method will return a list of mailing list objects containing `id`, `name` and `isPublic` attributes.
+This method will return a list of mailing list objects containing `id`, `name`, `description` and `isPublic` attributes.
 
 If your account has no mailing lists, an empty list will be returned.
 
@@ -328,11 +485,13 @@ If your account has no mailing lists, an empty list will be returned.
   {
     "id": "cm06f5v0e45nf0ml5754o9cix",
     "name": "Main list",
+    "description": "All customers.",
     "isPublic": true
   },
   {
     "id": "cm16k73gq014h0mmj5b6jdi9r",
     "name": "Investors",
+    "description": null,
     "isPublic": false
   }
 ]
@@ -396,15 +555,16 @@ $result = $loops->events->send(
 
 #### Response
 
-This method will return a success or error:
-
 ```json
 {
   "success": true
 }
 ```
 
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
 ```json
+// HTTP 400 Bad Request
 {
   "success": false,
   "message": "An error message here."
@@ -462,25 +622,27 @@ $result = $loops->transactional->send(
 
 #### Response
 
-This method will return a success or error message.
-
 ```json
 {
   "success": true
 }
 ```
 
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
 If there is a problem with the request, a descriptive error message will be returned:
 
 ```json
+// HTTP 400 Bad Request
 {
   "success": false,
   "path": "dataVariables",
-  "message": "There are required fields for this email. You need to include a 'dataVariables' array with the required fields."
+  "message": "There are required fields for this email. You need to include a 'dataVariables' object with the required fields."
 }
 ```
 
 ```json
+// HTTP 400 Bad Request
 {
   "success": false,
   "error": {
@@ -493,45 +655,6 @@ If there is a problem with the request, a descriptive error message will be retu
 
 ---
 
-### customFields->getAll()
-
-Get a list of your account's custom fields. These are custom properties that can be added to contacts to store extra data. [Read more about contact properties](https://loops.so/docs/contacts/properties)
-
-[API Reference](https://loops.so/docs/api-reference/list-custom-fields)
-
-#### Parameters
-
-None
-
-#### Example
-
-```php
-$result = $loops->customFields->getAll();
-```
-
-#### Response
-
-This method will return a list of custom field objects containing `key`, `label` and `type` attributes.
-
-If your account has no custom fields, an empty list will be returned.
-
-```json
-[
-  {
-    "key": "favoriteColor",
-    "label": "Favorite Color",
-    "type": "string"
-  },
-  {
-    "key": "plan",
-    "label": "Plan",
-    "type": "string"
-  }
-]
-```
-
----
-
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/Loops-so/loops-php.
+Bug reports and pull requests are welcome. Please read our [Contributing Guidelines](CONTRIBUTING.md).

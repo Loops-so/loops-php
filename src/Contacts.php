@@ -3,7 +3,6 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 
 class Contacts
 {
@@ -14,37 +13,33 @@ class Contacts
         $this->client = $client;
     }
 
-    public function create(string $email, array $properties = [], array $mailing_lists = [])
+    public function create(string $email, ?array $properties = [], ?array $mailing_lists = []): mixed
     {
         $payload = [
             'email' => $email,
             'mailingLists' => $mailing_lists
         ];
         $payload = array_merge($payload, $properties);
-        try {
-            $response = $this->client->post('v1/contacts/create', ['json' => $payload]);
-            return json_decode(json: $response->getBody()->getContents(), associative: true);
-        } catch (GuzzleException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+
+        return $this->client->query('POST', 'v1/contacts/create', [
+            'json' => $payload
+        ]);
     }
 
-    public function update(string $email, array $properties = [], array $mailing_lists = [])
+    public function update(string $email, ?array $properties = [], ?array $mailing_lists = []): mixed
     {
         $payload = [
             'email' => $email,
             'mailingLists' => $mailing_lists
         ];
         $payload = array_merge($payload, $properties);
-        try {
-            $response = $this->client->put('v1/contacts/update', ['json' => $payload]);
-            return json_decode(json: $response->getBody()->getContents(), associative: true);
-        } catch (GuzzleException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+
+        return $this->client->query('PUT', 'v1/contacts/update', [
+            'json' => $payload
+        ]);
     }
 
-    public function find(string $email = null, string $user_id = null)
+    public function find(?string $email = null, ?string $user_id = null): mixed
     {
         if ($email && $user_id) {
             throw new \InvalidArgumentException(message: 'Only one parameter is permitted.');
@@ -58,15 +53,12 @@ class Contacts
         if ($user_id)
             $query['userId'] = $user_id;
 
-        try {
-            $response = $this->client->get('v1/contacts/find', ['query' => $query]);
-            return json_decode(json: $response->getBody()->getContents(), associative: true);
-        } catch (GuzzleException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+        return $this->client->query('GET', 'v1/contacts/find', [
+            'query' => $query
+        ]);
     }
 
-    public function delete(string $email = null, string $user_id = null)
+    public function delete(?string $email = null, ?string $user_id = null): mixed
     {
         if ($email && $user_id) {
             throw new \InvalidArgumentException(message: 'Only one parameter is permitted.');
@@ -74,17 +66,15 @@ class Contacts
         if (!$email && !$user_id) {
             throw new \InvalidArgumentException(message: 'You must provide an email or user_id value.');
         }
+
         $payload = [];
         if ($email)
             $payload['email'] = $email;
         if ($user_id)
             $payload['userId'] = $user_id;
 
-        try {
-            $response = $this->client->post('v1/contacts/delete', ['json' => $payload]);
-            return json_decode(json: $response->getBody()->getContents(), associative: true);
-        } catch (GuzzleException $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
-        }
+        return $this->client->query('POST', 'v1/contacts/delete', [
+            'json' => $payload
+        ]);
     }
 }
