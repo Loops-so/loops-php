@@ -80,6 +80,7 @@ You can use custom contact properties in API calls. Please make sure to [add cus
 - [mailingLists->get()](#mailinglists-get)
 - [events->send()](#events-send)
 - [transactional->send()](#transactional-send)
+- [transactional->get()](#transactional-get)
 
 ---
 
@@ -341,10 +342,10 @@ Create a new contact property.
 
 #### Parameters
 
-| Name   | Type   | Required | Notes                                                                                  |
-| ------ | ------ | -------- | -------------------------------------------------------------------------------------- |
-| `name` | string | Yes      | The name of the property. Should be in camelCase, like `planName` or `favouriteColor`. |
-| `type` | string | Yes      | The property's value type.<br />Can be one of `string`, `number`, `boolean` or `date`. |
+| Name    | Type   | Required | Notes                                                                                  |
+| ------- | ------ | -------- | -------------------------------------------------------------------------------------- |
+| `$name` | string | Yes      | The name of the property. Should be in camelCase, like `planName` or `favouriteColor`. |
+| `$type` | string | Yes      | The property's value type.<br />Can be one of `string`, `number`, `boolean` or `date`. |
 
 #### Examples
 
@@ -380,9 +381,9 @@ Get a list of your account's contact properties.
 
 #### Parameters
 
-| Name   | Type   | Required | Notes                                                           |
-| ------ | ------ | -------- | --------------------------------------------------------------- |
-| `list` | string | No       | Use "custom" to retrieve only your account's custom properties. |
+| Name    | Type   | Required | Notes                                                           |
+| ------- | ------ | -------- | --------------------------------------------------------------- |
+| `$list` | string | No       | Use "custom" to retrieve only your account's custom properties. |
 
 #### Example
 
@@ -650,6 +651,68 @@ If there is a problem with the request, a descriptive error message will be retu
     "message": "Missing required fields: login_url"
   },
   "transactionalId": "clfq6dinn000yl70fgwwyp82l"
+}
+```
+
+---
+
+### transactional->get()
+
+Get a list of published transactional emails.
+
+[API Reference](https://loops.so/docs/api-reference/list-transactional-emails)
+
+#### Parameters
+
+| Name        | Type    | Required | Notes                                                                                                                         |
+| ----------- | ------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `$per_page` | integer | No       | How many results to return per page. Must be between 10 and 50. Defaults to 20 if omitted.                                    |
+| `$cursor`   | string  | No       | A cursor, to return a specific page of results. Cursors can be found from the `pagination.nextCursor` value in each response. |
+
+#### Example
+
+```php
+$result = $loops->transactional->get();
+
+$result = $loops->transactional->get(per_page: 15);
+```
+
+#### Response
+
+```json
+{
+  "pagination": {
+    "totalResults": 23,
+    "returnedResults": 20,
+    "perPage": 20,
+    "totalPages": 2,
+    "nextCursor": "clyo0q4wo01p59fsecyxqsh38",
+    "nextPage": "https://app.loops.so/api/v1/transactional?cursor=clyo0q4wo01p59fsecyxqsh38&perPage=20"
+  },
+  "data": [
+    {
+      "id": "clfn0k1yg001imo0fdeqg30i8",
+      "lastUpdated": "2023-11-06T17:48:07.249Z",
+      "dataVariables": []
+    },
+    {
+      "id": "cll42l54f20i1la0lfooe3z12",
+      "lastUpdated": "2025-02-02T02:56:28.845Z",
+      "dataVariables": [
+        "confirmationUrl"
+      ]
+    },
+    {
+      "id": "clw6rbuwp01rmeiyndm80155l",
+      "lastUpdated": "2024-05-14T19:02:52.000Z",
+      "dataVariables": [
+        "firstName",
+        "lastName",
+        "inviteLink"
+      ]
+    },
+    ...
+  ]
 }
 ```
 
