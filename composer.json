@@ -1,8 +1,9 @@
 {
-  "name": "loops/loops-php",
+  "name": "loops-so/loops",
   "description": "The official Loops PHP client.",
   "license": "MIT",
   "type": "library",
+  "homepage": "https://github.com/Loops-so/loops-php",
   "require": {
     "php": "^8.0",
     "guzzlehttp/guzzle": "^7.9"

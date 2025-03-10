@@ -9,7 +9,7 @@ This is the official PHP package for [Loops](https://loops.so), an email platfor
 Install the Loops package using Composer:
 
 ```bash
-composer require loops/loops-php
+composer require loops-so/loops
 ```
 
 ## Usage
@@ -36,15 +36,37 @@ $result = $loops->apiKey->test();
 
 // Create a contact and catch errors
 try {
-    $result = $loops->contacts->create('user@example.com', ['firstName' => 'John']);
+    $result = $loops->contacts->create('user@example.com', [
+      'firstName' => 'John'
+    ]);
+} catch (Loops\Exceptions\APIError $e) {
+    // Handle API errors (400, 401, 403, etc)
+    echo $e->getMessage();
+    $returnedJson = $e->getJson(); // JSON returned by the API
+    $statusCode = $e->statusCode(); // HTTP status code from the response
+} catch (\Exception $e) {
+    // Handle any other unexpected errors
+    echo "Unexpected error: " . $e->getMessage();
+}
+```
+
+## Handling rate limits
+
+You can use the check for rate limit issues with your requests.
+
+You can access details about the rate limits from the `getLimit` and `getRemaining` functions.
+
+```php
+try {
+    $result = $loops->contacts->create('user@example.com', [
+      'firstName' => 'John'
+    ]);
 } catch (Loops\Exceptions\RateLimitExceededError $e) {
     // Handle rate limiting
     echo "Rate limit hit. Limit: " . $e->getLimit() . ", requests remaining: " . $e->getRemaining();
 } catch (Loops\Exceptions\APIError $e) {
     // Handle API errors (400, 401, 403, etc)
     echo $e->getMessage();
-    $returnedJson = $e->getJson(); // JSON returned by the API
-    $statusCode = $e->statusCode(); // HTTP status code from the response
 } catch (\Exception $e) {
     // Handle any other unexpected errors
     echo "Unexpected error: " . $e->getMessage();
@@ -582,16 +604,16 @@ Send a transactional email to a contact. [Learn about sending transactional emai
 
 #### Parameters
 
-| Name                          | Type    | Required | Notes                                                                                                                                                                                            |
-| ----------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `$transactional_id`           | string  | Yes      | The ID of the transactional email to send.                                                                                                                                                       |
-| `$email`                      | string  | Yes      | The email address of the recipient.                                                                                                                                                              |
-| `$add_to_audience`            | boolean | No       | If `true`, a contact will be created in your audience using the `$email` value (if a matching contact doesn’t already exist).                                                                    |
-| `$data_variables`             | array   | No       | An array containing data as defined by the data variables added to the transactional email template.<br />Values can be of type `string` or `number`.                                            |
-| `$attachments`                | array[] | No       | A list of attachments objects.<br />**Please note**: Attachments need to be enabled on your account before using them with the API. [Read more](https://loops.so/docs/transactional/attachments) |
-| `$attachments[].filename`     | string  | No       | The name of the file, shown in email clients.                                                                                                                                                    |
-| `$attachments[].content_type` | string  | No       | The MIME type of the file.                                                                                                                                                                       |
-| `$attachments[].data`         | string  | No       | The base64-encoded content of the file.                                                                                                                                                          |
+| Name                             | Type    | Required | Notes                                                                                                                                                                                            |
+| -------------------------------- | ------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `$transactional_id`              | string  | Yes      | The ID of the transactional email to send.                                                                                                                                                       |
+| `$email`                         | string  | Yes      | The email address of the recipient.                                                                                                                                                              |
+| `$add_to_audience`               | boolean | No       | If `true`, a contact will be created in your audience using the `$email` value (if a matching contact doesn’t already exist).                                                                    |
+| `$data_variables`                | array   | No       | An array containing data as defined by the data variables added to the transactional email template.<br />Values can be of type `string` or `number`.                                            |
+| `$attachments`                   | array[] | No       | A list of attachments objects.<br />**Please note**: Attachments need to be enabled on your account before using them with the API. [Read more](https://loops.so/docs/transactional/attachments) |
+| `$attachments[]["filename"]`     | string  | No       | The name of the file, shown in email clients.                                                                                                                                                    |
+| `$attachments[]["content_type"]` | string  | No       | The MIME type of the file.                                                                                                                                                                       |
+| `$attachments[]["data"]`         | string  | No       | The base64-encoded content of the file.                                                                                                                                                          |
 
 #### Examples
 

@@ -14,7 +14,7 @@ class LoopsClient
   public Transactional $transactional;
   public ContactProperties $contactProperties;
 
-  public function __construct(string $api_key): void
+  public function __construct(string $api_key)
   {
     $this->httpClient = new \GuzzleHttp\Client(config: [
       'base_uri' => self::BASE_URI,
@@ -52,13 +52,13 @@ class LoopsClient
         // Handle rate limiting
         $limit = (int) ($response->getHeader('x-ratelimit-limit')[0] ?? 10);
         $remaining = (int) ($response->getHeader('x-ratelimit-remaining')[0] ?? 10);
-        throw new Exceptions\RateLimitExceededError($limit, $remaining);
+        throw new Exceptions\RateLimitExceededError(limit: $limit, remaining: $remaining);
       }
 
       if ($response->getStatusCode() >= 400) {
         // All other error status codes from API
         $json = json_decode(json: $response->getBody()->getContents(), associative: true);
-        throw new Exceptions\APIError($response->getStatusCode(), $json);
+        throw new Exceptions\APIError(statusCode: $response->getStatusCode(), json: $json);
       }
 
       return json_decode(json: $response->getBody()->getContents(), associative: true);
