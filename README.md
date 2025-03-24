@@ -1,12 +1,14 @@
 # Loops PHP Package
 
+[![Packagist Total Downloads](https://img.shields.io/packagist/dt/loops-so/loops?style=social)](https://packagist.org/packages/loops-so/loops)
+
 ## Introduction
 
 This is the official PHP package for [Loops](https://loops.so), an email platform for modern software companies.
 
 ## Installation
 
-Install the Loops package using Composer:
+Install the Loops package [using Composer](https://packagist.org/packages/loops-so/loops):
 
 ```bash
 composer require loops-so/loops
