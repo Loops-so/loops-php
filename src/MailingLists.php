@@ -3,6 +3,7 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class MailingLists
 {
@@ -13,8 +14,11 @@ class MailingLists
         $this->client = $client;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function get()
     {
-        return $this->client->query('GET', 'v1/lists');
+        return $this->client->request('GET', 'v1/lists');
     }
 }

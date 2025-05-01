@@ -3,6 +3,7 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Events
 {
@@ -13,6 +14,9 @@ class Events
         $this->client = $client;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function send(
         string $event_name,
         ?string $email = null,
@@ -35,7 +39,7 @@ class Events
 
         $payload = array_merge($payload, $contact_properties);
 
-        return $this->client->query('POST', 'v1/events/send', [
+        return $this->client->request('POST', 'v1/events/send', [
             'json' => $payload
         ]);
     }

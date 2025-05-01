@@ -3,6 +3,7 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Contacts
 {
@@ -13,6 +14,9 @@ class Contacts
         $this->client = $client;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function create(string $email, ?array $properties = [], ?array $mailing_lists = []): mixed
     {
         $payload = [
@@ -21,11 +25,14 @@ class Contacts
         ];
         $payload = array_merge($payload, $properties);
 
-        return $this->client->query('POST', 'v1/contacts/create', [
+        return $this->client->request('POST', 'v1/contacts/create', [
             'json' => $payload
         ]);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function update(string $email, ?array $properties = [], ?array $mailing_lists = []): mixed
     {
         $payload = [
@@ -34,11 +41,14 @@ class Contacts
         ];
         $payload = array_merge($payload, $properties);
 
-        return $this->client->query('PUT', 'v1/contacts/update', [
+        return $this->client->request('PUT', 'v1/contacts/update', [
             'json' => $payload
         ]);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function find(?string $email = null, ?string $user_id = null): mixed
     {
         if ($email && $user_id) {
@@ -53,11 +63,14 @@ class Contacts
         if ($user_id)
             $query['userId'] = $user_id;
 
-        return $this->client->query('GET', 'v1/contacts/find', [
+        return $this->client->request('GET', 'v1/contacts/find', [
             'query' => $query
         ]);
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function delete(?string $email = null, ?string $user_id = null): mixed
     {
         if ($email && $user_id) {
@@ -73,7 +86,7 @@ class Contacts
         if ($user_id)
             $payload['userId'] = $user_id;
 
-        return $this->client->query('POST', 'v1/contacts/delete', [
+        return $this->client->request('POST', 'v1/contacts/delete', [
             'json' => $payload
         ]);
     }

@@ -3,6 +3,7 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Transactional
 {
@@ -13,6 +14,9 @@ class Transactional
         $this->client = $client;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function send(
         string $transactional_id,
         string $email,
@@ -28,10 +32,14 @@ class Transactional
             'attachments' => $attachments,
         ];
 
-        return $this->client->query('POST', 'v1/transactional', [
+        return $this->client->request('POST', 'v1/transactional', [
             'json' => $payload
         ]);
     }
+
+    /**
+     * @throws GuzzleException
+     */
     public function get(?int $per_page = 20, ?string $cursor = null): mixed
     {
 
@@ -41,7 +49,7 @@ class Transactional
         if ($cursor)
             $query['cursor'] = $cursor;
 
-        return $this->client->query('GET', 'v1/transactional', [
+        return $this->client->request('GET', 'v1/transactional', [
             'query' => $query
         ]);
     }

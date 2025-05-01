@@ -3,6 +3,7 @@
 namespace Loops;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 class ContactProperties
 {
@@ -13,6 +14,9 @@ class ContactProperties
         $this->client = $client;
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function create(string $name, string $type = 'string' | 'number' | 'boolean' | 'date'): mixed
     {
         $payload = [
@@ -20,17 +24,21 @@ class ContactProperties
             'type' => $type
         ];
 
-        return $this->client->query('POST', 'v1/contacts/properties', [
+        return $this->client->request('POST', 'v1/contacts/properties', [
             'json' => $payload
         ]);
     }
+
+    /**
+     * @throws GuzzleException
+     */
     public function get(string $list = null): mixed
     {
         $query = [];
         if ($list) {
             $query['list'] = $list;
         }
-        return $this->client->query('GET', 'v1/contacts/properties', [
+        return $this->client->request('GET', 'v1/contacts/properties', [
             'query' => $query
         ]);
     }
