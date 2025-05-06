@@ -2,13 +2,13 @@
 
 namespace Loops;
 
-use GuzzleHttp\Client;
+use Loops\LoopsClient;
 
 class Transactional
 {
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(LoopsClient $client)
     {
         $this->client = $client;
     }
@@ -28,7 +28,7 @@ class Transactional
             'attachments' => $attachments,
         ];
 
-        return $this->client->query('POST', 'v1/transactional', [
+        return $this->client->query(method: 'POST', endpoint: 'v1/transactional', options: [
             'json' => $payload
         ]);
     }
@@ -41,7 +41,7 @@ class Transactional
         if ($cursor)
             $query['cursor'] = $cursor;
 
-        return $this->client->query('GET', 'v1/transactional', [
+        return $this->client->query(method: 'GET', endpoint: 'v1/transactional', options: [
             'query' => $query
         ]);
     }

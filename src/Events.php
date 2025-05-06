@@ -2,13 +2,12 @@
 
 namespace Loops;
 
-use GuzzleHttp\Client;
-
+use Loops\LoopsClient;
 class Events
 {
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(LoopsClient $client)
     {
         $this->client = $client;
     }
@@ -35,7 +34,7 @@ class Events
 
         $payload = array_merge($payload, $contact_properties);
 
-        return $this->client->query('POST', 'v1/events/send', [
+        return $this->client->query(method: 'POST', endpoint: 'v1/events/send', options: [
             'json' => $payload
         ]);
     }

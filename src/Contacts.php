@@ -2,13 +2,13 @@
 
 namespace Loops;
 
-use GuzzleHttp\Client;
+use Loops\LoopsClient;
 
 class Contacts
 {
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(LoopsClient $client)
     {
         $this->client = $client;
     }
@@ -21,7 +21,7 @@ class Contacts
         ];
         $payload = array_merge($payload, $properties);
 
-        return $this->client->query('POST', 'v1/contacts/create', [
+        return $this->client->query(method: 'POST', endpoint: 'v1/contacts/create', options: [
             'json' => $payload
         ]);
     }
@@ -34,7 +34,7 @@ class Contacts
         ];
         $payload = array_merge($payload, $properties);
 
-        return $this->client->query('PUT', 'v1/contacts/update', [
+        return $this->client->query(method: 'PUT', endpoint: 'v1/contacts/update', options: [
             'json' => $payload
         ]);
     }
@@ -53,7 +53,7 @@ class Contacts
         if ($user_id)
             $query['userId'] = $user_id;
 
-        return $this->client->query('GET', 'v1/contacts/find', [
+        return $this->client->query(method: 'GET', endpoint: 'v1/contacts/find', options: [
             'query' => $query
         ]);
     }
@@ -73,7 +73,7 @@ class Contacts
         if ($user_id)
             $payload['userId'] = $user_id;
 
-        return $this->client->query('POST', 'v1/contacts/delete', [
+        return $this->client->query(method: 'POST', endpoint: 'v1/contacts/delete', options: [
             'json' => $payload
         ]);
     }

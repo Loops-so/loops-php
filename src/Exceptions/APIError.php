@@ -2,8 +2,6 @@
 
 namespace Loops\Exceptions;
 
-use GuzzleHttp\Exception\GuzzleException;
-
 class APIError extends \Exception
 {
   private $statusCode;

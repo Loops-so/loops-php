@@ -25,12 +25,12 @@ class LoopsClient
       'http_errors' => false
     ]);
 
-    $this->apiKey = new ApiKey(client: $this->httpClient);
-    $this->contacts = new Contacts(client: $this->httpClient);
-    $this->events = new Events(client: $this->httpClient);
-    $this->mailingLists = new MailingLists(client: $this->httpClient);
-    $this->transactional = new Transactional(client: $this->httpClient);
-    $this->contactProperties = new ContactProperties(client: $this->httpClient);
+    $this->apiKey = new ApiKey(client: $this);
+    $this->contacts = new Contacts(client: $this);
+    $this->events = new Events(client: $this);
+    $this->mailingLists = new MailingLists(client: $this);
+    $this->transactional = new Transactional(client: $this);
+    $this->contactProperties = new ContactProperties(client: $this);
   }
 
   /**
@@ -44,7 +44,7 @@ class LoopsClient
    * @throws Exceptions\APIError When API returns an error
    * @throws \Exception When other errors occur
    */
-  protected function query(string $method, string $endpoint, array $options = []): mixed
+  public function query(string $method, string $endpoint, array $options = []): mixed
   {
     try {
       $response = $this->httpClient->$method($endpoint, $options);
@@ -67,5 +67,4 @@ class LoopsClient
       throw $e;
     }
   }
-
 }
