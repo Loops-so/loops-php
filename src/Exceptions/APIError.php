@@ -9,7 +9,10 @@ class APIError extends \Exception
 
   public function __construct(int $statusCode, ?array $json = null)
   {
-    parent::__construct(message: $json['message'] ?? 'API Error');
+    parent::__construct(
+      message: $json['message'] ?? 'API Error',
+      code: $statusCode
+    );
     $this->statusCode = $statusCode;
     $this->json = $json;
   }

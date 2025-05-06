@@ -34,6 +34,17 @@ class LoopsClient
   }
 
   /**
+   * Sets the HTTP client. This method is primarily for testing purposes.
+   *
+   * @param \GuzzleHttp\Client $client
+   * @return void
+   */
+  public function setHttpClient(\GuzzleHttp\Client $client): void
+  {
+    $this->httpClient = $client;
+  }
+
+  /**
    * Performs an HTTP request to the Loops API
    *
    * @param string $method The HTTP method to use
