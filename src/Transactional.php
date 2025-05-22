@@ -18,7 +18,8 @@ class Transactional
         string $email,
         ?bool $add_to_audience = false,
         ?array $data_variables = [],
-        ?array $attachments = [] /** @var array<array{filename: string, content_type: string, data: string}> */
+        ?array $attachments = [], /** @var array<array{filename: string, content_type: string, data: string}> */
+        ?array $headers = []
     ): mixed {
         $payload = [
             'transactional_id' => $transactional_id,
@@ -29,9 +30,11 @@ class Transactional
         ];
 
         return $this->client->query(method: 'POST', endpoint: 'v1/transactional', options: [
-            'json' => $payload
+            'json' => $payload,
+            'headers' => $headers
         ]);
     }
+
     public function get(?int $per_page = 20, ?string $cursor = null): mixed
     {
 

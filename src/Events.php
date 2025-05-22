@@ -18,7 +18,8 @@ class Events
         ?string $user_id = null,
         ?array $contact_properties = [],
         ?array $event_properties = [],
-        ?array $mailing_lists = []
+        ?array $mailing_lists = [],
+        ?array $headers = []
     ): mixed {
         if (!$email && !$user_id) {
             throw new \InvalidArgumentException(message: 'You must provide an email or user_id value.');
@@ -35,7 +36,8 @@ class Events
         $payload = array_merge($payload, $contact_properties);
 
         return $this->client->query(method: 'POST', endpoint: 'v1/events/send', options: [
-            'json' => $payload
+            'json' => $payload,
+            'headers' => $headers
         ]);
     }
 }

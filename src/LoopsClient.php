@@ -58,6 +58,14 @@ class LoopsClient
   public function query(string $method, string $endpoint, array $options = []): mixed
   {
     try {
+      // Merge custom headers with default headers if headers are provided
+      if (isset($options['headers']) && is_array($options['headers'])) {
+        $options['headers'] = array_merge(
+          $this->httpClient->getConfig(option: 'headers'),
+          $options['headers']
+        );
+      }
+
       $response = $this->httpClient->$method($endpoint, $options);
       if ($response->getStatusCode() === 429) {
         // Handle rate limiting

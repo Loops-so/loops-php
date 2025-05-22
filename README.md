@@ -171,7 +171,7 @@ $mailing_lists = [
   'cm16k73gq014h0mmj5b6jdi9r' => FALSE,
 ];
 $result = $loops->contacts->create(
-  "hello@gmail.com",
+  email: "hello@gmail.com",
   properties: $contact_properties,
   mailing_lists: $mailing_lists
 );
@@ -222,13 +222,13 @@ $contact_properties = [
   'favoriteColor' => 'Blue' /* Custom property */
 ];
 $response = $loops->contacts->update(
-  'hello@gmail.com',
+  email: 'hello@gmail.com',
   properties: $contact_properties
 );
 
 // Updating a contact's email address using userId
 $results = $loops->contacts->update(
-  'newemail@gmail.com',
+  email: 'newemail@gmail.com',
   properties: [
     'userId' => '1234'
   ]
@@ -274,7 +274,7 @@ You must use one parameter in the request.
 #### Examples
 
 ```php
-$result = $loops->contacts->find('hello@gmail.com');
+$result = $loops->contacts->find(email: 'hello@gmail.com');
 
 $result = $loops->contacts->find(user_id: '12345');
 ```
@@ -324,7 +324,7 @@ You must use one parameter in the request.
 #### Example
 
 ```php
-$result = $loops->contacts->delete('hello@gmail.com')
+$result = $loops->contacts->delete(email: 'hello@gmail.com')
 
 $result = $loops->contacts->delete(user_id: '12345')
 ```
@@ -414,7 +414,7 @@ Get a list of your account's contact properties.
 ```php
 $result = $loops->contactProperties->get();
 
-$result = $loops->contactProperties->get("custom");
+$result = $loops->contactProperties->get(list: "custom");
 ```
 
 #### Response
@@ -540,17 +540,18 @@ Send an event to trigger an email in Loops. [Read more about events](https://loo
 | `$contact_properties` | array  | No       | An array containing contact properties, which will be updated or added to the contact when the event is received.<br />Please [add custom properties](https://loops.so/docs/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](https://loops.so/docs/contacts/properties#dates)). |
 | `$event_properties`   | array  | No       | An array containing event properties, which will be made available in emails that are triggered by this event.<br />Values can be of type `string`, `number`, `boolean` or `date` ([see allowed date formats](https://loops.so/docs/events/properties#important-information-about-event-properties)).                                                                                                                                                         |
 | `$mailing_lists`      | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                                                               |
+| `$headers`            | array  | No       | Additional headers to send with the request.                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 #### Examples
 
 ```php
 $result = $loops->events->send(
-  'signup',
+  event_name: 'signup',
   email: 'hello@gmail.com'
 );
 
 $result = $loops->events->send(
-  'signup',
+  event_name: 'signup',
   email: 'hello@gmail.com',
   event_properties: [
     'username' => 'user1234',
@@ -568,7 +569,7 @@ $result = $loops->events->send(
 # If a contact is not found, a new contact will be created using both `email` and `user_id` values.
 # Any values added in `contact_properties` will also be updated on the contact.
 $result = $loops->events->send(
-  'signup',
+  event_name: 'signup',
   email: 'hello@gmail.com',
   user_id: '1234567890',
   contact_properties: [
@@ -576,6 +577,15 @@ $result = $loops->events->send(
     'plan' => 'pro',
   }]
 });
+
+# Example with Idempotency-Key header
+$result = $loops->events->send(
+  event_name: 'signup',
+  email: 'hello@gmail.com',
+  headers: [
+    'Idempotency-Key' => '550e8400-e29b-41d4-a716-446655440000'
+  ]
+);
 ```
 
 #### Response
@@ -616,6 +626,7 @@ Send a transactional email to a contact. [Learn about sending transactional emai
 | `$attachments[]["filename"]`     | string  | No       | The name of the file, shown in email clients.                                                                                                                                                    |
 | `$attachments[]["content_type"]` | string  | No       | The MIME type of the file.                                                                                                                                                                       |
 | `$attachments[]["data"]`         | string  | No       | The base64-encoded content of the file.                                                                                                                                                          |
+| `$headers`                       | array   | No       | Additional headers to send with the request.                                                                                                                                                     |
 
 #### Examples
 
@@ -625,6 +636,18 @@ $result = $loops->transactional->send(
   email: 'hello@gmail.com',
   data_variables: [
     'loginUrl' => 'https://myapp.com/login/',
+  ]
+);
+
+# Example with Idempotency-Key header
+$result = $loops->transactional->send(
+  transactional_id: 'clfq6dinn000yl70fgwwyp82l',
+  email: 'hello@gmail.com',
+  data_variables: [
+    'loginUrl' => 'https://myapp.com/login/',
+  ],
+  headers: [
+    'Idempotency-Key' => '550e8400-e29b-41d4-a716-446655440000'
   ]
 );
 
@@ -738,6 +761,14 @@ $result = $loops->transactional->get(per_page: 15);
     ...
   ]
 }
+```
+
+---
+
+## Testing
+
+```bash
+vendor/bin/phpunit
 ```
 
 ---

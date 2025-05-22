@@ -1,3 +1,7 @@
+## v1.0.1 - May 22, 2025
+
+Added a `headers` argument in `events-send()` and `transactional->send()`, enabling support for the Idempotency-Key header.
+
 ## v1.0.0 - May 6, 2025
 
 - Fixed client imports.
