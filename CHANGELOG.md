@@ -1,3 +1,7 @@
+## v1.0.2 - May 29, 2025
+
+Fixed an issue with underlying transactional API call attribute names.
+
 ## v1.0.1 - May 22, 2025
 
 Added a `headers` argument in `events-send()` and `transactional->send()`, enabling support for the Idempotency-Key header.

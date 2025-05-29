@@ -22,10 +22,10 @@ class Transactional
         ?array $headers = []
     ): mixed {
         $payload = [
-            'transactional_id' => $transactional_id,
+            'transactionalId' => $transactional_id,
             'email' => $email,
-            'add_to_audience' => $add_to_audience,
-            'data_variables' => $data_variables,
+            'addToAudience' => $add_to_audience,
+            'dataVariables' => $data_variables,
             'attachments' => $attachments,
         ];
 

@@ -36,7 +36,7 @@ class TransactionalTest extends TestCase
     $attachments = [
       [
         'filename' => 'test.pdf',
-        'content_type' => 'application/pdf',
+        'contentType' => 'application/pdf',
         'data' => 'base64_encoded_data'
       ]
     ];
@@ -61,17 +61,17 @@ class TransactionalTest extends TestCase
           ], $custom_headers);
 
           // Verify payload structure
-          $has_required_fields = isset($payload['transactional_id'])
+          $has_required_fields = isset($payload['transactionalId'])
             && isset($payload['email'])
-            && isset($payload['add_to_audience'])
-            && isset($payload['data_variables'])
+            && isset($payload['addToAudience'])
+            && isset($payload['dataVariables'])
             && isset($payload['attachments']);
 
           // Verify payload values
-          $has_correct_values = $payload['transactional_id'] === $transactional_id
+          $has_correct_values = $payload['transactionalId'] === $transactional_id
             && $payload['email'] === $email
-            && $payload['add_to_audience'] === $add_to_audience
-            && $payload['data_variables'] === $data_variables
+            && $payload['addToAudience'] === $add_to_audience
+            && $payload['dataVariables'] === $data_variables
             && $payload['attachments'] === $attachments;
 
           // Verify headers
@@ -84,8 +84,6 @@ class TransactionalTest extends TestCase
         status: 200,
         body: json_encode([
           'success' => true,
-          'id' => 'clfn0k1yg001imo0fdeqg30i8',
-          'sentAt' => '2024-03-14T19:02:52.000Z'
         ])
       ));
 
@@ -102,15 +100,9 @@ class TransactionalTest extends TestCase
     // Assert the response structure
     $this->assertIsArray($result);
     $this->assertArrayHasKey('success', $result);
-    $this->assertArrayHasKey('id', $result);
-    $this->assertArrayHasKey('sentAt', $result);
 
     // Assert response values
     $this->assertTrue($result['success']);
-    $this->assertIsString($result['id']);
-    $this->assertNotEmpty($result['id']);
-    $this->assertIsString($result['sentAt']);
-    $this->assertNotEmpty($result['sentAt']);
   }
 
   public function testGetTransactionals(): void
