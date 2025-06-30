@@ -45,7 +45,7 @@ try {
     // Handle API errors (400, 401, 403, etc)
     echo $e->getMessage();
     $returnedJson = $e->getJson(); // JSON returned by the API
-    $statusCode = $e->statusCode(); // HTTP status code from the response
+    $statusCode = $e->getStatusCode(); // HTTP status code from the response
 } catch (\Exception $e) {
     // Handle any other unexpected errors
     echo "Unexpected error: " . $e->getMessage();
