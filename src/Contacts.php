@@ -26,10 +26,14 @@ class Contacts
         ]);
     }
 
-    public function update(string $email, ?array $properties = [], ?array $mailing_lists = []): mixed
+    public function update(?string $email = null, ?string $user_id = null, ?array $properties = [], ?array $mailing_lists = []): mixed
     {
+        if (!$email && !$user_id) {
+            throw new \InvalidArgumentException(message: 'You must provide an email or user_id value.');
+        }
         $payload = [
             'email' => $email,
+            'userId' => $user_id,
             'mailingLists' => $mailing_lists
         ];
         $payload = array_merge($payload, $properties);

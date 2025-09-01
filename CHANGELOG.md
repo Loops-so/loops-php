@@ -1,3 +1,7 @@
+## v2.0.0 - Sep 1, 2025
+
+Added support for using either `$email` or `$user_id` in `contacts->update()`.
+
 ## v1.0.2 - May 29, 2025
 
 Fixed an issue with underlying transactional API call attribute names.

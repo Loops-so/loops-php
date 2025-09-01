@@ -210,27 +210,34 @@ Note: To update a contact's email address, the contact requires a `userId` value
 
 | Name             | Type   | Required | Notes                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ---------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `$email`         | string | Yes      | The email address of the contact to update. If there is no contact with this email address, a new contact will be created using the email and properties in this request.                                                                                                                                                                                                                                           |
+| `$email`         | string | No       | The email address of the contact to update. If there is no contact with this email address, a new contact will be created using the email and properties in this request. Required if `$user_id` is not present.                                                                                                                                                                                                    |
+| `$user_id`       | string | No       | The contact's unique user ID. If you use `$user_id` without `$email`, this value must have already been added to your contact in Loops. Required if `$email` is not present.                                                                                                                                                                                                                                        |
 | `$properties`    | array  | No       | An array containing default and any custom properties for your contact.<br />Please [add custom properties](https://loops.so/docs/contacts/properties#custom-contact-properties) in your Loops account before using them with the SDK.<br />Values can be of type `string`, `number`, `null` (to reset a value), `boolean` or `date` ([see allowed date formats](https://loops.so/docs/contacts/properties#dates)). |
 | `$mailing_lists` | array  | No       | An array of mailing list IDs and boolean subscription statuses.                                                                                                                                                                                                                                                                                                                                                     |
 
 #### Example
 
 ```php
-$contact_properties = [
-  'firstName' => 'Bob', /* Default property */
-  'favoriteColor' => 'Blue' /* Custom property */
-];
-$response = $loops->contacts->update(
+$result = $loops->contacts->update(
   email: 'hello@gmail.com',
-  properties: $contact_properties
+  properties: [
+    'firstName' => 'Bob', /* Default property */
+    'favoriteColor' => 'Blue' /* Custom property */
+  ]
 );
 
-// Updating a contact's email address using userId
-$results = $loops->contacts->update(
-  email: 'newemail@gmail.com',
-  properties: [
-    'userId' => '1234'
+// Updating a contact's email address using $user_id
+$result = $loops->contacts->update(
+  user_id: '1234',
+  email: 'newemail@gmail.com'
+);
+
+// Subscribe a contact to a mailing list
+$result = $loops->contacts->update(
+  email: 'hello@gmail.com',
+  mailing_lists: [
+    'cm06f5v0e45nf0ml5754o9cix' => true /* Subscribe */,
+    'cm16k73gq014h0mmj5b6jdi9r' => false /* Unsubscribe */
   ]
 );
 ```

@@ -75,10 +75,12 @@ class ContactsTest extends TestCase
       ->willReturn(new Response(
         status: 200,
         body: json_encode([
-          'id' => '12345',
-          'email' => 'test@example.com',
-          'name' => 'Test User',
-          'mailing_lists' => ['list1' => true]
+          [
+            'id' => '12345',
+            'email' => 'test@example.com',
+            'name' => 'Test User',
+            'mailing_lists' => ['list1' => true]
+          ]
         ])
       ));
 
@@ -88,12 +90,14 @@ class ContactsTest extends TestCase
     );
 
     // Assert the response
-    $this->assertEquals([
-      'id' => '12345',
-      'email' => 'test@example.com',
-      'name' => 'Test User',
-      'mailing_lists' => ['list1' => true]
-    ], $result);
+    $this->assertEquals(expected: [
+      [
+        'id' => '12345',
+        'email' => 'test@example.com',
+        'name' => 'Test User',
+        'mailing_lists' => ['list1' => true]
+      ]
+    ], actual: $result);
   }
 
   public function testUpdateContact(): void
@@ -129,6 +133,53 @@ class ContactsTest extends TestCase
 
     // Assert the response
     $this->assertEquals(['success' => true, 'id' => '12345'], $result);
+  }
+
+  public function testUpdateContactWithUserId(): void
+  {
+    $userId = 'abcdef123456';
+    $properties = ['name' => 'Updated User'];
+    $mailingLists = ['list2' => true];
+
+    // Configure mock to expect the correct API call
+    $this->mockHttpClient
+      ->expects($this->once())
+      ->method('put')
+      ->with(
+        'v1/contacts/update',
+        $this->callback(callback: function (array $options) use ($userId, $properties, $mailingLists): bool {
+          $payload = $options['json'];
+          return $payload['userId'] === $userId
+            && $payload['name'] === $properties['name']
+            && $payload['mailingLists'] === $mailingLists;
+        })
+      )
+      ->willReturn(new Response(
+        status: 200,
+        body: json_encode(['success' => true, 'id' => '12345'])
+      ));
+
+    // Make the API call
+    $result = $this->client->contacts->update(
+      user_id: $userId,
+      properties: $properties,
+      mailing_lists: $mailingLists
+    );
+
+    // Assert the response
+    $this->assertEquals(['success' => true, 'id' => '12345'], $result);
+  }
+
+  public function testUpdateContactWithoutEmailAndUserId(): void
+  {
+    $this->expectException(exception: \InvalidArgumentException::class);
+    $this->expectExceptionMessage(message: 'You must provide an email or user_id value.');
+
+    // Make the API call without email or user_id
+    $this->client->contacts->update(
+      email: null,
+      user_id: null
+    );
   }
 
   public function testDeleteContact(): void
