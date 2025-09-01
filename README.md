@@ -202,7 +202,7 @@ Error handling is done through the `APIError` class, which provides `getStatusCo
 
 Update a contact.
 
-Note: To update a contact's email address, the contact requires a `userId` value. Then you can make a request with their `userId` and an updated email address.
+Note: To update a contact's email address, the contact requires a `$user_id` value. Then you can make a request with their `$user_id` and an updated email address.
 
 [API Reference](https://loops.so/docs/api-reference/update-contact)
 
@@ -570,7 +570,7 @@ $result = $loops->events->send(
   ]
 ;
 
-# In this case with both email and userId present, the system will look for a contact with either a
+# In this case with both email and user_id present, the system will look for a contact with either a
 #  matching `email` or `user_id` value.
 # If a contact is found for one of the values (e.g. `email`), the other value (e.g. `user_id`) will be updated.
 # If a contact is not found, a new contact will be created using both `email` and `user_id` values.
