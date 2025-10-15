@@ -87,6 +87,7 @@ Each contact in Loops has a set of default properties. These will always be retu
 - `subscribed`
 - `userGroup`
 - `userId`
+- `optInStatus`
 
 ## Custom contact properties
 
@@ -306,6 +307,7 @@ If no contact is found, an empty list will be returned.
     "mailingLists": {
       "cm06f5v0e45nf0ml5754o9cix": true
     },
+    "optInStatus": null,
     "favoriteColor": "Blue" /* Custom property */
   }
 ]
