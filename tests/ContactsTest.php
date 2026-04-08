@@ -211,4 +211,105 @@ class ContactsTest extends TestCase
     $this->assertEquals(['success' => true], $result);
   }
 
+  public function testCheckContactSuppressionByEmail(): void
+  {
+    $email = 'suppressed@example.com';
+
+    $this->mockHttpClient
+      ->expects($this->once())
+      ->method('get')
+      ->with(
+        'v1/contacts/suppression',
+        $this->callback(function ($options) use ($email) {
+          return $options['query']['email'] === $email;
+        })
+      )
+      ->willReturn(new Response(
+        status: 200,
+        body: json_encode([
+          'contact' => [
+            'id' => '12345',
+            'email' => $email,
+            'userId' => null
+          ],
+          'isSuppressed' => true,
+          'removalQuota' => [
+            'limit' => 100,
+            'remaining' => 10
+          ]
+        ])
+      ));
+
+    $result = $this->client->contacts->checkSuppression(email: $email);
+
+    $this->assertEquals([
+      'contact' => [
+        'id' => '12345',
+        'email' => $email,
+        'userId' => null
+      ],
+      'isSuppressed' => true,
+      'removalQuota' => [
+        'limit' => 100,
+        'remaining' => 10
+      ]
+    ], $result);
+  }
+
+  public function testCheckContactSuppressionWithBothIdentifiersThrows(): void
+  {
+    $this->expectException(exception: \InvalidArgumentException::class);
+    $this->expectExceptionMessage(message: 'Only one parameter is permitted.');
+
+    $this->client->contacts->checkSuppression(
+      email: 'test@example.com',
+      user_id: '12345'
+    );
+  }
+
+  public function testRemoveContactSuppressionByUserId(): void
+  {
+    $userId = 'user-123';
+
+    $this->mockHttpClient
+      ->expects($this->once())
+      ->method('delete')
+      ->with(
+        'v1/contacts/suppression',
+        $this->callback(function ($options) use ($userId) {
+          return $options['query']['userId'] === $userId;
+        })
+      )
+      ->willReturn(new Response(
+        status: 200,
+        body: json_encode([
+          'success' => true,
+          'message' => 'Email removed from suppression list.',
+          'removalQuota' => [
+            'limit' => 100,
+            'remaining' => 4
+          ]
+        ])
+      ));
+
+    $result = $this->client->contacts->removeSuppression(user_id: $userId);
+
+    $this->assertEquals([
+      'success' => true,
+      'message' => 'Email removed from suppression list.',
+      'removalQuota' => [
+        'limit' => 100,
+        'remaining' => 4
+      ]
+    ], $result);
+  }
+
+  public function testRemoveContactSuppressionWithoutIdentifierThrows(): void
+  {
+    $this->expectException(exception: \InvalidArgumentException::class);
+    $this->expectExceptionMessage(message: 'You must provide an email or user_id value.');
+
+    $this->client->contacts->removeSuppression();
+  }
+
 }

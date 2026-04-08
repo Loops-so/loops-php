@@ -1,3 +1,7 @@
+## v2.1.0 - Apr 8, 2026
+
+Added `contacts->checkSuppression()` and `contacts->removeSuppression()` for managing contact suppressions.
+
 ## v2.0.0 - Sep 1, 2025
 
 Added support for using either `$email` or `$user_id` in `contacts->update()`.

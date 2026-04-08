@@ -81,4 +81,44 @@ class Contacts
             'json' => $payload
         ]);
     }
+
+    public function checkSuppression(?string $email = null, ?string $user_id = null): mixed
+    {
+        if ($email && $user_id) {
+            throw new \InvalidArgumentException(message: 'Only one parameter is permitted.');
+        }
+        if (!$email && !$user_id) {
+            throw new \InvalidArgumentException(message: 'You must provide an email or user_id value.');
+        }
+
+        $query = [];
+        if ($email)
+            $query['email'] = $email;
+        if ($user_id)
+            $query['userId'] = $user_id;
+
+        return $this->client->query(method: 'GET', endpoint: 'v1/contacts/suppression', options: [
+            'query' => $query
+        ]);
+    }
+
+    public function removeSuppression(?string $email = null, ?string $user_id = null): mixed
+    {
+        if ($email && $user_id) {
+            throw new \InvalidArgumentException(message: 'Only one parameter is permitted.');
+        }
+        if (!$email && !$user_id) {
+            throw new \InvalidArgumentException(message: 'You must provide an email or user_id value.');
+        }
+
+        $query = [];
+        if ($email)
+            $query['email'] = $email;
+        if ($user_id)
+            $query['userId'] = $user_id;
+
+        return $this->client->query(method: 'DELETE', endpoint: 'v1/contacts/suppression', options: [
+            'query' => $query
+        ]);
+    }
 }

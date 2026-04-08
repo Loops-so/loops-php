@@ -100,6 +100,8 @@ You can use custom contact properties in API calls. Please make sure to [add cus
 - [contacts->update()](#contacts-update)
 - [contacts->find()](#contacts-find)
 - [contacts->delete()](#contacts-delete)
+- [contacts->checkSuppression()](#contacts-checksuppression)
+- [contacts->removeSuppression()](#contacts-removesuppression)
 - [contactProperties->create()](#contactproperties-create)
 - [contactProperties->get()](#contactproperties-get)
 - [mailingLists->get()](#mailinglists-get)
@@ -362,6 +364,122 @@ Error handling is done through the `APIError` class, which provides `getStatusCo
 {
   "success": false,
   "message": "An error message here."
+}
+```
+
+---
+
+### contacts->checkSuppression()
+
+Check if a contact is currently suppressed.
+
+[API Reference](https://loops.so/docs/api-reference/check-contact-suppression)
+
+#### Parameters
+
+You must use one parameter in the request.
+
+| Name       | Type   | Required | Notes |
+| ---------- | ------ | -------- | ----- |
+| `$email`   | string | No       |       |
+| `$user_id` | string | No       |       |
+
+#### Example
+
+```php
+$result = $loops->contacts->checkSuppression(email: 'hello@gmail.com');
+
+$result = $loops->contacts->checkSuppression(user_id: '12345');
+```
+
+#### Response
+
+```json
+{
+  "contact": {
+    "id": "cll6b3i8901a9jx0oyktl2m4u",
+    "email": "adam@loops.so",
+    "userId": null
+  },
+  "isSuppressed": true,
+  "removalQuota": {
+    "limit": 100,
+    "remaining": 10
+  }
+}
+```
+
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
+```json
+// HTTP 400 Bad Request
+{
+  "success": false,
+  "message": "An email or userId is required."
+}
+```
+
+```json
+// HTTP 404 Not Found
+{
+  "success": false,
+  "message": "This contact was not found."
+}
+```
+
+---
+
+### contacts->removeSuppression()
+
+Remove suppression for a contact.
+
+[API Reference](https://loops.so/docs/api-reference/remove-contact-suppression)
+
+#### Parameters
+
+You must use one parameter in the request.
+
+| Name       | Type   | Required | Notes |
+| ---------- | ------ | -------- | ----- |
+| `$email`   | string | No       |       |
+| `$user_id` | string | No       |       |
+
+#### Example
+
+```php
+$result = $loops->contacts->removeSuppression(email: 'hello@gmail.com');
+
+$result = $loops->contacts->removeSuppression(user_id: '12345');
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Email removed from suppression list.",
+  "removalQuota": {
+    "limit": 100,
+    "remaining": 4
+  }
+}
+```
+
+Error handling is done through the `APIError` class, which provides `getStatusCode()` and `getJson()` methods for retrieving the API's error response details. For implementation examples, see the [Usage section](#usage).
+
+```json
+// HTTP 400 Bad Request
+{
+  "success": false,
+  "message": "This contact is not suppressed."
+}
+```
+
+```json
+// HTTP 404 Not Found
+{
+  "success": false,
+  "message": "This contact was not found."
 }
 ```
 
